@@ -1,0 +1,13 @@
+<!-- templates/notes/note_form.html -->
+
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h1>{% if note %}Edit Note{% else %}Create New Note{% endif %}</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+  <a href="{% url 'notes:note-list' %}">Cancel</a>
+{% endblock %}

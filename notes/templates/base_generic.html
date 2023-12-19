@@ -1,0 +1,31 @@
+<!-- templates/base_generic.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Notes App{% endblock %}</title>
+</head>
+<body>
+    <header>
+          <h1>My Notes App</h1>
+              <nav>
+                <ul>
+                  <li><a href="{% url 'notes:note-list' %}">Notes</a></li>
+                  {% if user.is_authenticated and not user.is_staff %}
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                  {% endif %}
+                </ul>
+              </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+{#        <p>&copy; 2023 My Notes App</p>#}
+    </footer>
+</body>
+</html>
