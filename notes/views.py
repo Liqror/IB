@@ -16,6 +16,14 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 
+# для шифрования
+import random
+import sympy
+import random
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+
 class NoteListView(LoginRequiredMixin, ListView):
     model = Note
     template_name = 'note_list.html'
@@ -64,3 +72,46 @@ class RegisterView(View):
             login(request, user)
             return redirect(reverse_lazy('login'))  # Перенаправление на страницу логина
         return render(request, self.template_name, {'form': form})
+
+
+# далее воспринимаем это как Боба - бэкенд
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import random
+from sympy import isprime
+
+@csrf_exempt
+def generate_params(request):
+    p = generate_prime()
+    g = primitive_root(p)
+    return JsonResponse({'p': p, 'g': g})
+
+def generate_prime():
+    while True:
+        num = random.randint(100, 1000)  # Задайте нужный диапазон для p
+        if isprime(num) and isprime((num - 1) // 2):
+            return num
+
+def primitive_root(p):
+    primitive_roots = [i for i in range(2, p) if is_primitive_root(i, p)]
+    return random.choice(primitive_roots)
+
+def is_primitive_root(a, p):
+    if a % p == 1:
+        return False
+    return all(pow(a, (p - 1) // i, p) != 1 for i in factorize(p - 1))
+
+def factorize(n):
+    i = 2
+    factors = set()
+    while i * i <= n:
+        if n % i:
+            i += 1
+        else:
+            n //= i
+            factors.add(i)
+    if n > 1:
+        factors.add(n)
+    return factors
+

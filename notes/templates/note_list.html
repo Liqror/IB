@@ -1,4 +1,5 @@
 {% extends 'base_generic.html' %}
+{% load static %}
 
 {% block content %}
   <h1>Your Notes</h1>
@@ -12,4 +13,6 @@
     {% endfor %}
   </ul>
   <a href="{% url 'notes:note-create' %}">Create a new note</a>
+
+  <script src="{% static 'js/diffiehellman.js' %}"></script>
 {% endblock %}
