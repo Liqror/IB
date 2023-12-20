@@ -1,6 +1,18 @@
 {% extends 'base_generic.html' %}
+<style>
+   form {
+        background-color: #D0E6FF;
+   }
+   body {
+        background-color: #F0F0F0;
+   }
+   .cont {
 
+   }
+
+</style>
 {% block content %}
+<div style="text-align:center; width: 400px; margin: 70px auto; background-color: white; padding: 30px;background-color: #D0E6FF;">
   <h2>Login</h2>
   <form method="post" class="login-form">
     {% csrf_token %}
@@ -8,4 +20,6 @@
     <button type="submit">Login</button>
   </form>
   <p>Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
+</div>
+
 {% endblock %}

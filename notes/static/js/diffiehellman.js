@@ -13,6 +13,7 @@ async function generateParams() {
 // Пример использования
 async function performDiffieHellman() {
     const { p, g } = await generateParams();
+    console.log('Frontend - Received p and g:', p);
 
 }
 

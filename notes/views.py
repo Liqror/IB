@@ -88,10 +88,26 @@ def generate_params(request):
     return JsonResponse({'p': p, 'g': g})
 
 def generate_prime():
-    while True:
+    flag = 1
+    while flag!=0:
         num = random.randint(100, 1000)  # Задайте нужный диапазон для p
-        if isprime(num) and isprime((num - 1) // 2):
-            return num
+        num2=(num - 1) // 2
+        if fermat_test(num)==True and fermat_test(num2)==True:
+            flag=0
+        else:
+            flag=1
+    return num
+
+
+def fermat_test(n, k=10):
+        if n <= 1:
+            return False
+        for _ in range(k):
+            a = random.randint(1, n-1)
+            if pow(a, n-1, n) != 1:
+                return False
+            return True
+
 
 def primitive_root(p):
     primitive_roots = [i for i in range(2, p) if is_primitive_root(i, p)]
