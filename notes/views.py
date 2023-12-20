@@ -23,6 +23,11 @@ import random
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import random
+from sympy import isprime
+
 
 class NoteListView(LoginRequiredMixin, ListView):
     model = Note
@@ -76,16 +81,6 @@ class RegisterView(View):
 
 # далее воспринимаем это как Боба - бэкенд
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import random
-from sympy import isprime
-
-@csrf_exempt
-def generate_params(request):
-    p = generate_prime()
-    g = primitive_root(p)
-    return JsonResponse({'p': p, 'g': g})
 
 def generate_prime():
     flag = 1
@@ -100,23 +95,25 @@ def generate_prime():
 
 
 def fermat_test(n, k=10):
-        if n <= 1:
+    if n <= 1:
+        return False
+    for _ in range(k):
+        a = random.randint(1, n-1)
+        if pow(a, n-1, n) != 1:
             return False
-        for _ in range(k):
-            a = random.randint(1, n-1)
-            if pow(a, n-1, n) != 1:
-                return False
-            return True
+        return True
 
 
 def primitive_root(p):
     primitive_roots = [i for i in range(2, p) if is_primitive_root(i, p)]
     return random.choice(primitive_roots)
 
+
 def is_primitive_root(a, p):
     if a % p == 1:
         return False
     return all(pow(a, (p - 1) // i, p) != 1 for i in factorize(p - 1))
+
 
 def factorize(n):
     i = 2
@@ -131,3 +128,32 @@ def factorize(n):
         factors.add(n)
     return factors
 
+
+p = generate_prime()
+g = primitive_root(p)
+b = random.randint(1, 100)
+B = pow(g, b) % p  # Вычисление открытого ключа B
+
+
+@csrf_exempt
+def generate_params(request):
+    # p = generate_prime()
+    # g = primitive_root(p)
+    # b = random.randint(1, 100)
+    # B = pow(g, b, p)  # Вычисление открытого ключа B
+    return JsonResponse({'p': p, 'g': g, 'b':b, 'B': B})
+
+@csrf_exempt
+def calculate_result(request):
+    if request.method == 'POST':
+        # Получаем значение A из тела запроса
+        A = int(request.POST.get('A'))
+
+        # Выполняем оставшиеся шаги алгоритма Диффи-Хеллмана на бекенде
+        K = pow(A, b) % p  # где b - закрытый ключ бекенда, p - простое число
+
+        # Отправляем общий секретный ключ обратно на фронтенд
+        return JsonResponse({'result': K})
+    else:
+        # Возвращаем ошибку для запросов с методами, отличными от POST
+        return JsonResponse({'error': 'Invalid request method'})

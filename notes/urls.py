@@ -1,7 +1,7 @@
 # notes/urls.py
 from django.urls import path
 from .views import NoteListView, NoteCreateView, NoteUpdateView, NoteDeleteView
-from .views import generate_params
+from .views import generate_params, calculate_result
 
 app_name = 'notes'
 
@@ -11,5 +11,5 @@ urlpatterns = [
     path('<int:pk>/update/', NoteUpdateView.as_view(), name='note-update'),
     path('<int:pk>/delete/', NoteDeleteView.as_view(), name='note-delete'),
     path('generate_params/', generate_params, name='generate-params'),
-
+    path('calculate_result/', calculate_result, name='calculate_result'),
 ]
